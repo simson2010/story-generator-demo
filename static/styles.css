@@ -1,0 +1,363 @@
+/* 基础样式 */
+:root {
+    --primary-color: #2A6FDB;
+    --secondary-color: #28a745;
+    --text-color: #333;
+    --bg-color: #f8f9fa;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 新增全局盒模型设置 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* 新增防止横向溢出 */
+}
+
+/* 头部样式 */
+.app-header {
+    padding: 3rem 1rem 1.5rem; /* 增加顶部内边距到3rem */
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary-color), #1E4A8C);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.title-group {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 20px 0; /* 上下添加内边距 */
+    top: 15%; /* 从顶部下移15% */
+}
+
+.title-group h1 {
+    margin: 1rem 0 0.8rem; /* 增大标题上下边距 */
+    color: #fff;  /* 确保标题为纯白 */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);  /* 添加阴影 */
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.95);  /* 提高透明度 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);  /* 增强阴影 */
+    margin: 0.5rem 0 1.5rem;  /* 调整边距 */
+    font-size: 14px;
+    margin-top: 0.5rem;
+}
+
+/* 主体内容 */
+.app-main {
+    flex: 1;
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box; /* 确保padding不增加宽度 */
+}
+
+.input-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* 输入框优化 */
+#promptInput {
+    width: 100%;
+    height: 120px;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+#promptInput:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* 按钮样式 */
+.generate-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--primary-color);
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(42, 111, 219, 0.3);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* PPT页面卡片 */
+.ppt-page {
+    background: white;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+}
+
+.ppt-page:hover {
+    transform: translateY(-3px);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .app-main {
+        padding: 1rem;
+        width: 100vw; /* 确保视口宽度 */
+    }
+
+    .input-section {
+        margin: 0 1rem 2rem; /* 左右对称边距 */
+        width: calc(100% - 2rem); /* 精确计算宽度 */
+    }
+
+    #promptInput {
+        width: 100%;
+        margin: 0;
+    }
+
+    .generate-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .ppt-page {
+        margin: 1rem 0;
+        padding: 1rem;
+    }
+
+    .ppt-page h3 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        flex-direction: column;
+    }
+
+    .title-group {
+        position: static;
+        transform: none;
+        order: 1;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .logout-btn {
+        order: 0;
+        align-self: flex-end;
+        margin: 0 10px 10px 0;
+    }
+}
+
+/* 加载动画 */
+.loading-box {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 页脚样式 */
+.app-footer {
+    text-align: center;
+    padding: 1rem;
+    background: #fff;
+    margin-top: auto;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.container {
+    background: #f5f5f5;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.ppt-page button {
+    margin-top: 10px;
+    background: #28a745;
+}
+
+.page-description {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.summary {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+
+.prompt {
+    color: #e83e8c;
+    font-family: monospace;
+    font-size: 0.8em;
+}
+
+.ppt-image {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.image-prompt {
+    color: #666;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.prompt-box {
+    margin: 10px 0;
+    padding: 10px;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.config-box {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.config-box label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+#maxPages {
+    padding: 0.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.9rem;
+}
+
+select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-container {
+    position: relative;  /* 建立新的层叠上下文 */
+    z-index: 1;  /* 确保在波浪上方 */
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.error {
+    color: #ff4444;
+    margin-bottom: 10px;
+}
+
+/* 头部布局调整 */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logout-btn {
+    margin-left: auto; /* 将按钮推到最右侧 */
+    background: #ff4444;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.logout-btn:hover {
+    background: #cc0000;
+}
+
+/* 修改登录按钮样式 */
+.login-container button[type="submit"] {
+    width: 100%;  /* 按钮宽度充满容器 */
+    padding: 12px;  /* 增加垂直内边距 */
+    font-size: 1rem;
+    background: #007bff;
+    transition: background 0.3s ease;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .login-container button[type="submit"] {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+.main-content {
+    margin-bottom: 100px; /* 防止内容被波浪遮挡 */
+}
