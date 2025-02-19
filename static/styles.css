@@ -361,3 +361,54 @@ select {
 .main-content {
     margin-bottom: 100px; /* 防止内容被波浪遮挡 */
 }
+
+.desc-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px 0 10px;
+    padding: 12px 30px;
+    background: #2A7F8C;  /* 纯色背景 */
+    color: #FFF;
+    border: 2px solid #1C5F6B;  /* 添加边框增强对比 */
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.desc-btn:hover {
+    background: #1C5F6B;  /* 仅颜色变化 */
+}
+
+.desc-btn::before {
+    content: "📖";
+    margin-right: 10px;
+}
+
+.page-header {
+    border-bottom: none;  /* 移除下划线 */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* 图片生成按钮样式 */
+.prompt-box button {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 20px;
+    margin: 10px 0;
+    background: #8C4A2A;  /* 纯色背景 */
+    color: #FFF;
+    border: 2px solid #6B381C;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.prompt-box button:hover {
+    background: #6B381C;  /* 仅颜色变化 */
+}
+
+.prompt-box button::before {
+    content: "🖼️";
+    margin-right: 8px;
+}

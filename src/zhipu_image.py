@@ -1,6 +1,11 @@
 # pip install zhipuai 请先在终端进行安装
-
 from zhipuai import ZhipuAI
+import os 
+
+import sys
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(ROOT_DIR)
+from logger import LOG
 
 class ZhipuImageGenerator:
     def __init__(self, api_key):
@@ -14,6 +19,8 @@ class ZhipuImageGenerator:
         返回：
             (image_url, revised_prompt) 元组
         """
+
+        LOG.info(f"正在生成图片，prompt: {prompt}")
         try:
             response = self.client.images.generations(
                 model=model,

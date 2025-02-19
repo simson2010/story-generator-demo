@@ -1,5 +1,10 @@
 from openai import OpenAI
 import os
+# 或者在代码中添加（在app.py开头）
+import sys
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(ROOT_DIR)
+from logger import LOG
 
 class OpenAIService:
     def __init__(self, outline_template, desc_template):
@@ -11,14 +16,15 @@ class OpenAIService:
     
     def generate_ppt_outline(self, user_prompt, max_pages):
         """生成PPT大纲"""
-        full_prompt = self.outline_template.format(max_pages=max_pages) + user_prompt
+        full_prompt = self.outline_template.format(max_pages=max_pages, user_theme=user_prompt)
         return self._generate_content(full_prompt)
     
-    def generate_page_description(self, title, points):
-        """生成页面描述"""
+    def generate_page_description(self, title, points, phase):
+        """生成页面描述（新增phase参数）"""
         formatted_prompt = self.desc_template.format(
             title=title,
-            points='\n'.join(points)
+            points='\n'.join(points),
+            phase=phase  # 插入阶段信息到模板
         )
         return self._generate_content(formatted_prompt, self.desc_model)
     
@@ -30,7 +36,13 @@ class OpenAIService:
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7
             )
+            
+            #用logger类打印prompt
+            
+            LOG.info("Prompt: {}".format(prompt))
+            LOG.info("Response: {}".format(completion.choices[0].message.content))
+
             return completion.choices[0].message.content
         except Exception as e:
-            print(e)
+            LOG.error("API调用失败: {}".format(str(e)))
             raise RuntimeError(f"API调用失败: {str(e)}") 

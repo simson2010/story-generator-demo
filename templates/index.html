@@ -77,10 +77,12 @@
                 if (data.error) throw new Error(data.error);
                 
                 resultContainer.innerHTML = data.pages.map((page, index) => `
-                    <div class="ppt-page" data-page="${index}">
-                        <h3>第${index + 1}页: ${page.title}</h3>
+                    <div class="ppt-page" data-page="${index}" data-phase="${page.phase}">
+                        <div class="page-header">
+                            <h3>第${index + 1}页: ${page.title}</h3>
+                        </div>
                         <ul>${page.points.map(point => `<li>${point}</li>`).join('')}</ul>
-                        <button onclick="generatePageDescription(${index})">生成详细描述</button>
+                        <button class="desc-btn" onclick="generatePageDescription(${index})">生成详细描述</button>
                         <div class="page-description" id="desc-${index}"></div>
                     </div>
                 `).join('');
@@ -96,7 +98,7 @@
             const pageDiv = document.querySelector(`[data-page="${pageIndex}"]`);
             const title = pageDiv.querySelector('h3').innerText;
             const points = Array.from(pageDiv.querySelectorAll('li')).map(li => li.innerText);
-            
+            const phase = pageDiv.dataset.phase; // 从div的data-phase属性获取阶段信息
             const descDiv = document.getElementById(`desc-${pageIndex}`);
             descDiv.innerHTML = '生成中...';
 
@@ -106,7 +108,8 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         title: title.split(': ')[1], // 提取纯标题
-                        points: points
+                        points: points,
+                        phase: phase
                     })
                 });
 

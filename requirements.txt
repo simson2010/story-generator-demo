@@ -1,5 +1,5 @@
 Flask==3.0.2
-Werkzeug==2.0.3
+Werkzeug
 requests==2.28.1
 python-pptx==0.6.21
 zhipuai==2.0.1

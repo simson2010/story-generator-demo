@@ -3,6 +3,7 @@ import os
 from src.zhipu_image import ZhipuImageGenerator
 from src.openai_service import OpenAIService
 from src.ppt_generator import PPTGenerator
+from src.prompt_templates import DEFAULT_PROMPT_TEMPLATE, DESC_PROMPT
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 from functools import wraps
@@ -12,8 +13,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config.update(
-    DEFAULT_PROMPT_TEMPLATE=os.getenv('DEFAULT_PROMPT_TEMPLATE'),
-    DESC_PROMPT=os.getenv('DESC_PROMPT'),
+    DEFAULT_PROMPT_TEMPLATE=DEFAULT_PROMPT_TEMPLATE,
+    DESC_PROMPT=DESC_PROMPT,
     MAX_PAGES=int(os.getenv('DEFAULT_MAX_PAGES', 5))
 )
 
@@ -120,11 +121,11 @@ def generate_page_desc():
     data = request.json
     try:
         content = ppt_gen.generate_description(
-            data['title'],
-            data['points']
+            title=data['title'],
+            points=data['points'],
+            phase=data['phase']  # 接收阶段参数
         )
         return jsonify(ppt_gen.parse_desc_content(content))
-    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
