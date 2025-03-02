@@ -1,5 +1,5 @@
 
-# AI PPT 生成器
+# Story PPT AI 生成器
 
 ![应用截图](docs/screenshot.png)
 
