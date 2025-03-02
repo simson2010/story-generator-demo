@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能PPT生成器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="title-group">
+                <h1>📖 Story PPT 生成器</h1>
+                <p class="subtitle">输入主题，一键生成完整故事演示方案</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">注销</button>
+        </div>
+    </header>
+    
+    <main class="app-main">
+        <section class="input-section">
+            <div class="input-section">
+                <textarea id="promptInput" placeholder="请输入您的演示主题..."></textarea>
+                
+                <div class="config-box">
+                    <label>最大页数：</label>
+                    <select id="maxPages">
+                        <option value="3">3页</option>
+                        <option value="5" selected>5页</option>
+                        <option value="8">8页</option>
+                    </select>
+                </div>
+                
+                <button class="generate-btn" onclick="generatePPT()">
+                    <span class="btn-icon">🚀</span> 立即生成
+                </button>
+            </div>
+
+            <div id="loading" class="loading-box hidden">
+                <div class="spinner"></div>
+                <div>内容生成中，请稍候...</div>
+            </div>
+
+            <section id="resultContainer" class="ppt-container"></section>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2024 智能PPT生成器 | 基于深度语义理解技术</p>
+    </footer>
+
+    <script>
+        async function generatePPT() {
+            const prompt = document.getElementById('promptInput').value;
+            const maxPages = document.getElementById('maxPages').value;
+            const loading = document.getElementById('loading');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            if (!prompt) {
+                alert('请输入主题内容');
+                return;
+            }
+
+            loading.classList.remove('hidden');
+            resultContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `prompt=${encodeURIComponent(prompt)}&max_pages=${maxPages}`
+                });
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                
+                resultContainer.innerHTML = data.pages.map((page, index) => `
+                    <div class="ppt-page" data-page="${index}" data-phase="${page.phase}">
+                        <div class="page-header">
+                            <h3>第${index + 1}页: ${page.title}</h3>
+                        </div>
+                        <ul>${page.points.map(point => `<li>${point}</li>`).join('')}</ul>
+                        <button class="desc-btn" onclick="generatePageDescription(${index})">生成详细描述</button>
+                        <div class="page-description" id="desc-${index}"></div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                alert(`生成失败: ${error.message}`);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        async function generatePageDescription(pageIndex) {
+            const pageDiv = document.querySelector(`[data-page="${pageIndex}"]`);
+            const title = pageDiv.querySelector('h3').innerText;
+            const points = Array.from(pageDiv.querySelectorAll('li')).map(li => li.innerText);
+            const phase = pageDiv.dataset.phase; // 从div的data-phase属性获取阶段信息
+            const descDiv = document.getElementById(`desc-${pageIndex}`);
+            descDiv.innerHTML = '生成中...';
+
+            try {
+                const response = await fetch('/generate_desc', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        title: title.split(': ')[1], // 提取纯标题
+                        points: points,
+                        phase: phase
+                    })
+                });
+
+                const data = await response.json();
+                descDiv.innerHTML = `
+                    <div class="summary">摘要：${data.summary}</div>
+                    <div class="prompt-box">
+                        <div>文生图提示：${data.image_prompt}</div>
+                        <button onclick="generateImage(${pageIndex}, '${data.image_prompt}')">生成图片</button>
+                    </div>
+                    <div class="image-result" id="img-${pageIndex}"></div>
+                `;
+            } catch (error) {
+                descDiv.innerHTML = '生成失败，请重试';
+            }
+        }
+
+        async function generateImage(pageIndex, prompt) {
+            const imgDiv = document.getElementById(`img-${pageIndex}`);
+            imgDiv.innerHTML = '图片生成中...';
+            
+            try {
+                const response = await fetch('/generate_image', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        size: '1024x1024'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                
+                imgDiv.innerHTML = `
+                    <img src="${data.image_url}" alt="生成图片" class="ppt-image">
+                    <div class="image-prompt">优化后的提示词：${data.revised_prompt}</div>
+                `;
+            } catch (error) {
+                imgDiv.innerHTML = `图片生成失败: ${error.message}`;
+            }
+        }
+
+        function logout() {
+            fetch('/logout')
+            .then(() => window.location.href = '/login')
+        }
+    </script>
+</body>
+</html> 
